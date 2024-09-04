@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import Cookies from 'js-cookie'; // Import the js-cookie library
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -20,61 +21,47 @@ export default function LoginPage() {
 
       console.log('Querying with email:', trimmedEmail);
 
-      // Query the student login table for a user with the given email
-      const { data: studentData, error: studentError } = await supabase
+      const { data: studentData } = await supabase
         .from('STUDENTLOGIN')
         .select('*')
         .eq('email', trimmedEmail);
 
-      if (studentError) {
-        console.error('Student Error:', studentError);
-        setError('Error fetching student data.');
-        return;
-      }
-
-      // Query the faculty login table for a user with the given email
-      const { data: facultyData, error: facultyError } = await supabase
+      const { data: facultyData } = await supabase
         .from('FACULTYLOGIN')
         .select('*')
         .eq('email', trimmedEmail);
 
-      if (facultyError) {
-        console.error('Faculty Error:', facultyError);
-        setError('Error fetching faculty data.');
-        return;
-      }
-
       console.log('Student Data:', studentData);
       console.log('Faculty Data:', facultyData);
 
-      // Check if the email exists in the student data
-      const studentUser = studentData.find(user => user.password === trimmedPassword);
-      if (studentUser) {
-        if (studentUser.email.includes('hod')) {
-          navigate('/hod');
-        } else if (studentUser.email.includes('ads') || studentUser.email.includes('cs')) {
-          navigate('/faculty');
-        } else {
+      if (studentData && studentData.length > 0) {
+        const user = studentData.find(user => user.password === trimmedPassword);
+        if (user) {
+          Cookies.set('user', JSON.stringify(user), { expires: 1 }); // Store in cookies
+          localStorage.setItem('user', JSON.stringify(user)); // Store in local storage
           navigate('/student');
+          return;
         }
-        return;
       }
 
-      // Check if the email exists in the faculty data
-      const facultyUser = facultyData.find(user => user.password === trimmedPassword);
-      if (facultyUser) {
-        if (facultyUser.email.includes('hod')) {
-          navigate('/hod');
-        } else if (facultyUser.email.includes('ads') || facultyUser.email.includes('cs')) {
-          navigate('/faculty');
-        } else {
-          navigate('/faculty'); // Default faculty page if the role is not recognized
+      if (facultyData && facultyData.length > 0) {
+        const user = facultyData.find(user => user.password === trimmedPassword);
+        if (user) {
+          Cookies.set('user', JSON.stringify(user), { expires: 1 });
+          localStorage.setItem('user', JSON.stringify(user));
+
+          if (user.email.includes('hod')) {
+            navigate('/hod');
+          } else if (user.email.includes('ads') || user.email.includes('cs')) {
+            navigate('/faculty');
+          } else {
+            setError('User role is not recognized.');
+          }
+          return;
         }
-        return;
       }
 
-      setError('Invalid login credentials.');
-
+      setError('Invalid email or password.');
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message || 'An unexpected error occurred. Please try again.');
