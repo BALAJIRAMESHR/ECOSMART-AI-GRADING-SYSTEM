@@ -10,6 +10,10 @@ const Sidebar = () => {
           <FaHome className="w-6 h-6 mb-1" />
           <span className="text-xs">Home</span>
         </Link>
+        <Link to="/coursemapping" className="flex flex-col items-center py-2 px-4 rounded hover:bg-gray-700">
+          <FaUserGraduate className="w-6 h-6 mb-1" />
+          <span className="text-xs">Course Mapping</span>
+        </Link>
         <Link to="/studentenrollment" className="flex flex-col items-center py-2 px-4 rounded hover:bg-gray-700">
           <FaUserGraduate className="w-6 h-6 mb-1" />
           <span className="text-xs">Student Enrollment</span>

@@ -12,6 +12,8 @@ import FacultyLayout from './components/FacultyLayout';
 import Qapaper from './components/Qapaper';
 import QaScrutinizer from './components/Qpscrutinizer';
 import Profile from './components/Profile';
+import ForgotPasswordPage from './components/forgot';
+import HodCourseMapping from './pages/HodCourseMapping';
 
 
 function App() {
@@ -27,7 +29,10 @@ function App() {
         <Route path="/scrutinizer" element={<Layout><Scrutinizer /></Layout>} />
         <Route path="/qapaper" element={<FacultyLayout><Qapaper/></FacultyLayout>} />
         <Route path="/qascrutinizer" element={<FacultyLayout><QaScrutinizer /></FacultyLayout>} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile" element={<Layout><Profile /></Layout>} />
+        <Route path="/coursemapping" element={<Layout><HodCourseMapping  /></Layout>} />
+        <Route path="/forgot" element={<ForgotPasswordPage/>} />
+        
       
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

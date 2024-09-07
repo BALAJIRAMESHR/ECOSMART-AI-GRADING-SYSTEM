@@ -100,7 +100,7 @@ const handleSubmit = async () => {
 
 
   return (
-    <div className="p-4 flex-grow">
+    <div className="p-24 flex-grow">
       <h2 className="text-xl font-bold mb-4">Course Mapping</h2>
 
       {/* Semester Selection */}

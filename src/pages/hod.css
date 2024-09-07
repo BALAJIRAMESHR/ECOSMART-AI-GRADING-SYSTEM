@@ -1,0 +1,34 @@
+/* Styles for different levels of contribution */
+.color-empty {
+     fill: #eeeeee;
+}
+
+.color-scale-1 {
+     fill: #d6e685;
+}
+
+.color-scale-2 {
+     fill: #8cc665;
+}
+
+.color-scale-3 {
+     fill: #44a340;
+}
+
+.color-scale-4 {
+     fill: #1e6823;
+}
+
+/* Add spacing between months */
+.react-calendar-heatmap .react-calendar-heatmap-week:first-child rect {
+     margin-left: 10px;
+     /* Adjust spacing as needed */
+}
+
+/* Adjust tooltip styling */
+.react-tooltip {
+     background-color: #333;
+     color: white;
+     border-radius: 5px;
+     padding: 5px 10px;
+}

@@ -94,7 +94,7 @@ const ProfilePage = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="p-4">
+    <div className="p-24">
       <h1 className="text-xl font-bold mb-4">Profile</h1>
       <div>
         <p><strong>Email:</strong> {user?.email || 'No email available'}</p>
