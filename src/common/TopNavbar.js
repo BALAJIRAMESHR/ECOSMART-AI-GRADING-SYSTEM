@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineLogout } from 'react-icons/ai';
+import avatar from '../assets/avatar.png';
 
 const TopNavbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -22,7 +23,7 @@ const TopNavbar = () => {
       <div className="flex items-center space-x-6">
         <div className="relative">
           <img
-            src="/path/to/profile-picture.jpg"
+            src={avatar}
             alt="Profile"
             className="w-8 h-8 rounded-full cursor-pointer"
             onClick={toggleDropdown}
