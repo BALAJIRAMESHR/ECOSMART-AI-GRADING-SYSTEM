@@ -1,4 +1,3 @@
-```markdown
 # AI Exam Evaluation System
 
 ![AI Exam Evaluation](public/logo192.png)
@@ -232,4 +231,3 @@ For any inquiries or feedback, please contact:
 ---
 
 © 2023 AI Exam Evaluation System. All rights reserved.
-```
