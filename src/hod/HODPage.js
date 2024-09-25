@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { supabase } from '../supabaseClient';
-import '../pages/hod.css';
+import '../hod/hod.css';
 
 const HODPage = () => {
   const [name, setName] = useState('John Doe');

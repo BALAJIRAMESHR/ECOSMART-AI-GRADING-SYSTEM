@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Cookies from 'js-cookie';
-import images from "./download (2).jpeg";
+import images from "../assets/laptop.jpeg";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');

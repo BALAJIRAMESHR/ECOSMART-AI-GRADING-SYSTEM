@@ -1,19 +1,19 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import StudentPage from './pages/StudentPage';
-import FacultyPage from './pages/FacultyPage';
-import LoginPage from './pages/LoginPage';
-import HODPage from './pages/HODPage';
-import StudentEnrollment from './components/Student Enrollment'; 
-import Qasettings from './components/Qasettings';
-import Scrutinizer from './components/Scrutinizer';
-import Layout from './components/Layout'; 
-import FacultyLayout from './components/FacultyLayout'; 
-import Qapaper from './components/Qapaper';
-import QaScrutinizer from './components/Qpscrutinizer';
-import Profile from './components/Profile';
-import ForgotPasswordPage from './components/forgot';
-import HodCourseMapping from './pages/HodCourseMapping';
+import StudentPage from './student/StudentPage';
+import FacultyPage from './faculty/FacultyPage';
+import LoginPage from './authentication/LoginPage';
+import HODPage from './hod/HODPage';
+import StudentEnrollment from './faculty/Student Enrollment'; 
+import Qasettings from './common/Qasettings';
+import Scrutinizer from './scrutinizer/Scrutinizer';
+import Layout from './common/Layout'; 
+import FacultyLayout from './faculty/FacultyLayout'; 
+import Qapaper from './common/Qapaper';
+import QaScrutinizer from './common/Qpscrutinizer';
+import Profile from './common/Profile';
+import ForgotPasswordPage from './authentication/forgot';
+import HodCourseMapping from './hod/HodCourseMapping';
 
 
 function App() {
