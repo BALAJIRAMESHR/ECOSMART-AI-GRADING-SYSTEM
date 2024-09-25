@@ -87,8 +87,8 @@ Ensure you have the following installed on your machine:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/ai-exam-evaluation.git
-   cd ai-exam-evaluation
+   git clone https://github.com/AiEvaluation12/AIEVAL.git
+   cd AIEVAL
    ```
 
 2. **Install Dependencies**
