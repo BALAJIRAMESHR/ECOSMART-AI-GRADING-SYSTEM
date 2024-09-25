@@ -3,6 +3,7 @@ import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { supabase } from '../supabaseClient';
 import '../hod/hod.css';
+import avatar from '../assets/avatar.png'; // Import the default avatar
 
 const HODPage = () => {
   const [name, setName] = useState('John Doe');
@@ -12,6 +13,10 @@ const HODPage = () => {
   const [contributionData, setContributionData] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+
+  const handleImageError = () => {
+    setProfilePic(avatar); // Fallback to the default avatar
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -131,10 +136,11 @@ const HODPage = () => {
   return (
     <div
       className="max-screen flex flex-col items-center justify-start pt-28 bg-cover bg-center"
-      style={{ backgroundImage: `url(${profilePic})` }}
+      // style={{ backgroundImage: `url(${profilePic})` }}
     >
       <div className="flex flex-col items-center p-12 rounded-lg mb-8 w-full max-w-30">
-        <img src={profilePic} alt="Profile" className="w-34 h-34 rounded-full mb-4" />
+        <img src={profilePic} onError={handleImageError}
+          alt="Profile" className="w-34 h-34 rounded-full mb-4" />
         <div className="text-center">
           <h2 className="text-4xl font-bold">{name}</h2>
           <p className=" text-2xl text-gray-600">{email}</p>
@@ -198,7 +204,7 @@ const HODPage = () => {
             gutterSize={2} // Adjust to control the gap between months
             horizontal
           />
-        
+
         </div>
       </div>
     </div>
