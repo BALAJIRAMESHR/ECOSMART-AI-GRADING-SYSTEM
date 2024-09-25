@@ -1,4 +1,3 @@
-```markdown
 # AI Exam Evaluation System
 
 ![AI Exam Evaluation](public/logo192.png)
@@ -88,8 +87,8 @@ Ensure you have the following installed on your machine:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/ai-exam-evaluation.git
-   cd ai-exam-evaluation
+   git clone https://github.com/AiEvaluation12/AIEVAL.git
+   cd AIEVAL
    ```
 
 2. **Install Dependencies**
@@ -232,4 +231,3 @@ For any inquiries or feedback, please contact:
 ---
 
 © 2023 AI Exam Evaluation System. All rights reserved.
-```
