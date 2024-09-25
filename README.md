@@ -1,70 +1,235 @@
-# Getting Started with Create React App
+```markdown
+# AI Exam Evaluation System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![AI Exam Evaluation](public/logo192.png)
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Introduction](#introduction)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running the Application](#running-the-application)
+- [Project Structure](#project-structure)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
-### `npm start`
+## Introduction
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+The **AI Exam Evaluation System** is a comprehensive platform designed to streamline the process of creating, managing, and evaluating exam papers using artificial intelligence. Tailored for educational institutions, this system facilitates seamless interaction between students, faculty, and administrative staff, ensuring efficient exam management and analysis.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features
 
-### `npm test`
+- **User Authentication**
+  - Secure login for students and faculty members.
+  - Role-based access control to different sections of the application.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- **Student Enrollment**
+  - Upload and manage student enrollment data.
+  - Support for PDF and Excel file formats.
 
-### `npm run build`
+- **Question Paper Settings**
+  - Create and manage exam papers with detailed question prompts and answers.
+  - Track total marks and organize questions systematically.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Faculty Dashboard**
+  - View department details including the number of students, teachers, and courses.
+  - Monitor overall performance and contribution metrics.
+  - Visualize time spent using interactive heatmaps.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **Course Mapping**
+  - Assign courses to faculty members based on semester and department.
+  - Manage course allocations efficiently.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Profile Management**
+  - View and update user profiles.
+  - Track personal contributions and time spent on the platform.
 
-### `npm run eject`
+- **AI-Powered Scrutinizer**
+  - Automated evaluation of exam papers.
+  - Detailed reports on student performance and exam quality.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Technology Stack
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Frontend**
+  - React.js
+  - Tailwind CSS
+  - React Router DOM
+  - React Icons
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Backend**
+  - Supabase (PostgreSQL, Authentication, Storage)
+  
+- **Testing**
+  - Jest
+  - React Testing Library
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- **Others**
+  - JavaScript (ES6+)
+  - HTML5 & CSS3
 
-## Learn More
+## Getting Started
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Follow these instructions to set up and run the project locally.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Prerequisites
 
-### Code Splitting
+Ensure you have the following installed on your machine:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- [npm](https://www.npmjs.com/) (comes with Node.js)
 
-### Analyzing the Bundle Size
+### Installation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+1. **Clone the Repository**
 
-### Making a Progressive Web App
+   ```bash
+   git clone https://github.com/yourusername/ai-exam-evaluation.git
+   cd ai-exam-evaluation
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+2. **Install Dependencies**
 
-### Advanced Configuration
+   ```bash
+   npm install
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+3. **Configure Environment Variables**
 
-### Deployment
+   Create a `.env.local` file in the root directory and add your Supabase credentials:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+   ```env
+   REACT_APP_SUPABASE_URL=your_supabase_url
+   REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-### `npm run build` fails to minify
+### Running the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Start the development server:
+
+```bash
+npm start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
+
+## Project Structure
+
+```plaintext
+ai-exam-evaluation/
+├── public/
+│   ├── index.html
+│   ├── manifest.json
+│   └── robots.txt
+├── src/
+│   ├── components/
+│   │   ├── Qapaper.js
+│   │   ├── Qasettings.js
+│   │   ├── Scrutinizer.js
+│   │   ├── Qpscrutinizer.js
+│   │   ├── StudentEnrollment.js
+│   │   ├── TopNavbar.js
+│   │   └── Profile.js
+│   ├── pages/
+│   │   ├── StudentPage.js
+│   │   ├── FacultyPage.js
+│   │   ├── HODPage.js
+│   │   ├── LoginPage.js
+│   │   └── HodCourseMapping.js
+│   ├── services/
+│   │   └── dataService.js
+│   ├── App.js
+│   ├── index.js
+│   ├── index.css
+│   ├── App.css
+│   ├── setupTests.js
+│   └── tailwind.config.js
+├── .gitignore
+├── package.json
+└── postcss.config.js
+```
+
+## Usage
+
+### 1. **Login**
+
+- **Students** and **Faculty** can log in using their registered email and password.
+- Use the "Forgot Password" feature if you need to reset your credentials.
+
+### 2. **Student Enrollment**
+
+- Navigate to the "Student Enrollment" section to upload enrollment data.
+- Supported file formats: PDF and Excel.
+- Select the appropriate academic year before uploading.
+
+### 3. **Question Paper Settings**
+
+- Create and manage exam papers by adding questions, prompts, answers, and marks.
+- Submit the compiled questions to the database for evaluation.
+
+### 4. **Faculty Dashboard**
+
+- Access detailed statistics about the department, including the number of students, teachers, and courses.
+- View contribution metrics and overall performance using interactive visualizations.
+
+### 5. **Course Mapping**
+
+- Assign courses to faculty members based on the selected semester.
+- Ensure that course allocations are correctly mapped to respective departments.
+
+### 6. **Profile Management**
+
+- View and update your profile information.
+- Track your contributions and time spent on the platform.
+
+### 7. **AI-Powered Scrutinizer**
+
+- Utilize the scrutinizer to automatically evaluate exam papers.
+- Generate detailed reports to assess student performance and exam quality.
+
+## Contributing
+
+Contributions are welcome! Please follow these steps to contribute:
+
+1. **Fork the Repository**
+
+2. **Create a New Branch**
+
+   ```bash
+   git checkout -b feature/YourFeatureName
+   ```
+
+3. **Commit Your Changes**
+
+   ```bash
+   git commit -m "Add some feature"
+   ```
+
+4. **Push to the Branch**
+
+   ```bash
+   git push origin feature/YourFeatureName
+   ```
+
+5. **Open a Pull Request**
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Contact
+
+For any inquiries or feedback, please contact:
+
+- **Email:** your.email@example.com
+- **LinkedIn:** [Your LinkedIn](https://www.linkedin.com/in/yourprofile/)
+- **GitHub:** [yourusername](https://github.com/yourusername)
+
+---
+
+© 2023 AI Exam Evaluation System. All rights reserved.
+```
