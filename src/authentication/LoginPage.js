@@ -78,7 +78,7 @@ export default function LoginPage() {
     navigate('/forgot');
   };
 
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="grid grid-cols-4 gap-4 w-full">
@@ -105,6 +105,8 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
+                pattern="/^\S+@\S+\.\S+$/"
+                title="Please enter a valid email address"
               />
             </div>
             <div className="mb-3">
@@ -120,6 +122,8 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
+                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                  title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character"                
                 />
                 <button
                   type="button"
