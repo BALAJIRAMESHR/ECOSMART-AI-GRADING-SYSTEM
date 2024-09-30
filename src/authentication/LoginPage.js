@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Cookies from 'js-cookie';
-import images from "../assets/laptop.jpeg";
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // Import eye icons
+
+// import images from "../assets/laptop.jpeg";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -67,24 +69,23 @@ export default function LoginPage() {
     }
   };
 
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleForgotPassword = () => {
     navigate('/forgot');
   };
 
+  
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      <div className="w-full max-w-7xl p-8 bg-white rounded-lg shadow-lg flex">
-        {/* Image Section */}
-        <div className="w-1/2">
-          <img src={images} alt="Graduation" className="w-full h-full object-cover rounded-l-lg" />
-        </div>
-        <div className="w-1/2 p-24 flex flex-col justify-center">
-          <div className="text-left mb-8">
-            <h1 className="text-xl font-bold text-center text-black-800">Kumaraguru College of Technology</h1>
-            <h2 className="text-lg text-left text-black-800 mt-8">Sign In</h2>
-            <p className="mt-2 text-sm text-left text-gray-700">
-              The key to happiness is to sign in.
-            </p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="grid grid-cols-4 gap-4 w-full">
+        <div className='col-span-1'>  </div>
+        <div className="col-span-2 mx-auto p-12 bg-white rounded-xl shadow-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-black-1200 px-10">KUMARAGURU COLLEGE OF TECHNOLOGY</h1>
           </div>
           {error && (
             <div className="mb-4 text-xs text-red-600 bg-red-100 border border-red-300 rounded p-2">
@@ -120,43 +121,37 @@ export default function LoginPage() {
                   required
                   disabled={loading}
                 />
-                
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+                >
+                  {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+                </button>
               </div>
             </div>
-
-            <div className="flex justify-between mt-2">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  checked={showPassword}
-                  onChange={() => setShowPassword(!showPassword)}
-                  disabled={loading}
-                />
-                <label htmlFor="show-password" className="text-sm font text-black-800">
-                  Show Password
-                </label>
-              </div>
+            <div className="flex items-center justify-between">
+              <button
+                type="submit"
+                className="w-full bg-indigo-500 text-white py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Login'}
+              </button>
+            </div>
+            <div className="mt-4 text-center">
               <button
                 type="button"
-                className="text-sm text-blue-600 hover:no-underline focus:outline-none"
                 onClick={handleForgotPassword}
-                disabled={loading}
+                className="text-indigo-500 hover:underline"
               >
                 Forgot Password?
               </button>
             </div>
-
-            <div className="flex justify-center mt-4">
-              <button
-                type="submit"
-                className="w-full px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none"
-                disabled={loading}
-              >
-                {loading ? <div className="spinner"></div> : 'Login'}
-              </button>
-            </div>
           </form>
+        </div>
+        <div className='col-span-1'>
+
         </div>
       </div>
     </div>
