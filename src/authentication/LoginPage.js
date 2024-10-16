@@ -105,7 +105,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                pattern="/^\S+@\S+\.\S+$/"
+                // pattern="/^\S+@\S+\.\S+$/"
                 title="Please enter a valid email address"
               />
             </div>
@@ -122,7 +122,7 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
-                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
+                  // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
                   title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character"                
                 />
                 <button

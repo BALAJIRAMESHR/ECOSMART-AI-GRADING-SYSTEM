@@ -114,7 +114,7 @@ const QAPaper = () => {
   };
 
   return (
-    <div className="p-24">
+    <div className="p-24 max-h-screen overflow-scroll">
       <h2 className="text-xl font-bold mb-4">Question Paper Settings</h2>
 
       {/* Row for Faculty ID, Exam Name, and Academic Year */}

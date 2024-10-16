@@ -5,10 +5,9 @@ import Sidebar from '../common/facsidebar'; // Adjust path as necessary
 
 const FacultyLayout = ({ children }) => {
   return (
-    <div className="flex">
+    <div className="flex max-h-screen overflow-scroll">
       <Sidebar />
       
-        
           {children}
         </div>
   

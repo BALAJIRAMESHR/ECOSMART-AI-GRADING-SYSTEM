@@ -61,9 +61,9 @@ const MainContent = () => {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="ml-20 mt-16 p-4 overflow-y-auto h-[calc(100vh-4rem)]">
-      <h1>Dashboard</h1>
-      <p>Welcome {name || 'User'} 👋</p>
+    <div className="min-h-screen py-10 px-6 overflow-scroll">
+      <h1 className='text-3xl font-medium'>Dashboard</h1>
+      <p className='text-neutral-600'>Welcome {name || 'User'} 👋</p>
     </div>
   );
 };
