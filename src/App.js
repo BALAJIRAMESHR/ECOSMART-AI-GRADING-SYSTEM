@@ -14,6 +14,8 @@ import QaScrutinizer from './common/Qpscrutinizer';
 import Profile from './common/Profile';
 import ForgotPasswordPage from './authentication/forgot';
 import HodCourseMapping from './hod/HodCourseMapping';
+import StudentLayout from './student/Layout';
+import Assignments from './student/Assignments';
 
 
 function App() {
@@ -21,7 +23,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/student" element={<Layout><StudentPage /></Layout>} />
         <Route path="/faculty" element={<FacultyLayout><FacultyPage /></FacultyLayout>} />
         <Route path="/hod" element={<Layout><HODPage /></Layout>} />
         <Route path="/studentenrollment" element={<Layout><StudentEnrollment /></Layout>} />
@@ -33,6 +34,9 @@ function App() {
         <Route path="/coursemapping" element={<Layout><HodCourseMapping  /></Layout>} />
         <Route path="/forgot" element={<ForgotPasswordPage/>} />
         
+        {/* Students */}
+        <Route path="/student" element={<StudentLayout><StudentPage /></StudentLayout>} />
+        <Route path="/student/assignments" element={<StudentLayout><Assignments /></StudentLayout>} />
       
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

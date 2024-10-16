@@ -10,9 +10,9 @@ const Dashboard = () => {
   return (
     <div className="flex">
       
-        <div className="p-24 flex-grow">
-          <h1 className="text-xl font-bold">Scrutinizer</h1>
-          <p className="text-lg mt-4">Welcome, {userEmail}</p>
+        <div className="p-10 flex-grow">
+          <h1 className="text-xl font-medium">Scrutinizer</h1>
+          <p className="font-medium text-neutral-500 mt-1 text-sm">Welcome, {userEmail}</p>
 
         </div>
       </div>

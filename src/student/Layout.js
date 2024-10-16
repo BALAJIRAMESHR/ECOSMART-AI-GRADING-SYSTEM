@@ -1,17 +1,20 @@
 // src/components/Layout.js
 import React from 'react';
-import Sidebar from './Sidebar';  // Adjust the path if needed
-import TopNavbar from './TopNavbar';  // Adjust the path if needed
+import TopNavbar from '../common/TopNavbar';
+import StuSidebar from '../common/StuSideBar';
 
 const StudentLayout = ({ children }) => {
   return (
-    <div className="flex">
-      <TopNavbar />
-      
-      <div className="flex-1 flex flex-col">
-        <Sidebar />
-        <div className="p-3 flex-grow">
-          {children}
+    <div className="flex w-full">
+      {/* SideBar */}
+      <StuSidebar/>
+      <div className='flex flex-col w-full'>
+        <TopNavbar />
+        
+        <div className="">
+          <div className="">
+            {children}
+          </div>
         </div>
       </div>
     </div>

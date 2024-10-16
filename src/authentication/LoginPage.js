@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Cookies from 'js-cookie';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // Import eye icons
+import { data } from 'autoprefixer';
 
 // import images from "../assets/laptop.jpeg";
 
@@ -36,7 +37,8 @@ export default function LoginPage() {
       if (studentData && studentData.length > 0) {
         const user = studentData.find(user => user.password === trimmedPassword);
         if (user) {
-          Cookies.set('user', JSON.stringify(user), { expires: 1 });
+          // Set the email in cookies
+          Cookies.set('email', trimmedEmail);
           localStorage.setItem('user', JSON.stringify(user));
           navigate('/student');
           return;
