@@ -2,10 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Cookies from 'js-cookie';
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // Import eye icons
-import { data } from 'autoprefixer';
-
-// import images from "../assets/laptop.jpeg";
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -24,45 +21,56 @@ export default function LoginPage() {
       const trimmedEmail = email.trim().toLowerCase();
       const trimmedPassword = password.trim();
 
-      const { data: studentData } = await supabase
-        .from('STUDENTLOGIN')
+      // Fetch user data from the LOGIN table
+      const { data: userData, error: fetchError } = await supabase
+        .from('LOGIN')
         .select('*')
         .eq('email', trimmedEmail);
 
-      const { data: facultyData } = await supabase
-        .from('FACULTYLOGIN')
-        .select('*')
-        .eq('email', trimmedEmail);
+      console.log('User Data:', userData); // Log the userData to see what is returned
+      console.log('Fetch Error:', fetchError); // Log any errors returned
 
-      if (studentData && studentData.length > 0) {
-        const user = studentData.find(user => user.password === trimmedPassword);
-        if (user) {
-          // Set the email in cookies
-          Cookies.set('email', trimmedEmail);
-          localStorage.setItem('user', JSON.stringify(user));
+      if (!userData || userData.length === 0) {
+        // No user found
+        setError('No user found with this email.');
+        return;
+      }
+
+      if (userData.length > 1) {
+        // Multiple users found
+        setError('Multiple accounts found with this email. Please contact support.');
+        return;
+      }
+
+      // We have exactly one user
+      const user = userData[0];
+
+      if (user.password === trimmedPassword) {
+        // Set the email in cookies and local storage
+        Cookies.set('email', trimmedEmail);
+        localStorage.setItem('user', JSON.stringify(user));
+
+        // Navigate based on the user's email
+        if (user.email.includes('hod')) {
+          navigate('/hod');
+        } else if (
+          user.email.includes('ads') ||
+          user.email.includes('cs') ||
+          user.email.includes('its')
+        ) {
+          navigate('/faculty');
+        } else if (
+          user.email.includes('21ad') ||
+          user.email.includes('21cs') ||
+          user.email.includes('21it')
+        ) {
           navigate('/student');
-          return;
+        } else {
+          setError('User role is not recognized.');
         }
+      } else {
+        setError('Invalid email or password.');
       }
-
-      if (facultyData && facultyData.length > 0) {
-        const user = facultyData.find(user => user.password === trimmedPassword);
-        if (user) {
-          Cookies.set('user', JSON.stringify(user), { expires: 1 });
-          localStorage.setItem('user', JSON.stringify(user));
-
-          if (user.email.includes('hod')) {
-            navigate('/hod');
-          } else if (user.email.includes('ads') || user.email.includes('cs')) {
-            navigate('/faculty');
-          } else {
-            setError('User role is not recognized.');
-          }
-          return;
-        }
-      }
-
-      setError('Invalid email or password.');
     } catch (err) {
       console.error('Login error:', err);
       setError(err.message || 'An unexpected error occurred. Please try again.');
@@ -70,7 +78,6 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
-
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -80,11 +87,10 @@ export default function LoginPage() {
     navigate('/forgot');
   };
 
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="grid grid-cols-4 gap-4 w-full">
-        <div className='col-span-1'>  </div>
+        <div className='col-span-1'></div>
         <div className="col-span-2 mx-auto p-12 bg-white rounded-xl shadow-md">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-black-1200 px-10">KUMARAGURU COLLEGE OF TECHNOLOGY</h1>
@@ -100,14 +106,13 @@ export default function LoginPage() {
                 Email
               </label>
               <input
-                type="email"
+                type="text" // Set type to text for email input
                 id="email"
                 className="w-full px-2 py-2 mt-1 text-xs border rounded focus:outline-none focus:border-indigo-500"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                // pattern="/^\S+@\S+\.\S+$/"
                 title="Please enter a valid email address"
               />
             </div>
@@ -117,15 +122,14 @@ export default function LoginPage() {
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? 'text' : 'password'}
+                  type="text" // Change to text for password input
                   id="password"
                   className="w-full px-3 py-2 mt-1 text-xs border rounded focus:outline-none focus:border-indigo-500"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
-                  // pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}"
-                  title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character"                
+                  title="Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character"
                 />
                 <button
                   type="button"
@@ -156,9 +160,7 @@ export default function LoginPage() {
             </div>
           </form>
         </div>
-        <div className='col-span-1'>
-
-        </div>
+        <div className='col-span-1'></div>
       </div>
     </div>
   );
