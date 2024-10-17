@@ -16,6 +16,7 @@ import ForgotPasswordPage from './authentication/forgot';
 import HodCourseMapping from './hod/HodCourseMapping';
 import StudentLayout from './student/Layout';
 import Assignments from './student/Assignments';
+import ExamContainer from './student/components/ExamContainer';
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         {/* Students */}
         <Route path="/student" element={<StudentLayout><StudentPage /></StudentLayout>} />
         <Route path="/student/assignments" element={<StudentLayout><Assignments /></StudentLayout>} />
+        <Route path="/student/assignments/test/:id" element={<ExamContainer/>} />
       
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
