@@ -220,14 +220,6 @@ Contributions are welcome! Please follow these steps to contribute:
 
 This project is licensed under the [MIT License](LICENSE).
 
-## Contact
-
-For any inquiries or feedback, please contact:
-
-- **Email:** your.email@example.com
-- **LinkedIn:** [Your LinkedIn](https://www.linkedin.com/in/yourprofile/)
-- **GitHub:** [yourusername](https://github.com/yourusername)
-
 ---
 
 © 2023 AI Exam Evaluation System. All rights reserved.
