@@ -19,14 +19,13 @@ function ExamContainer() {
     }
   }, [location.state]);
 
-  // Fetch the questions data
   useEffect(() => {
     const fetchQuestions = async () => {
       if (questionId) {
         const { data, error } = await supabase
           .from("QATABLE")
           .select("qap")
-          .eq("question_id", questionId);
+          .eq("question_paper_id", questionId);
 
         if (error) {
           console.error("Error fetching questions:", error);
@@ -39,40 +38,36 @@ function ExamContainer() {
     fetchQuestions();
   }, [questionId]);
 
-  // Handle change in the answer input
   const handleAnswerChange = (qid, value) => {
     setStudentAnswers({ ...studentAnswers, [qid]: value });
   };
 
-  // Handle form submission
   const handleSubmit = async () => {
-    const email = Cookies.get('email');
-    const submissionData = {
-        qid:questionId,
-        answers: studentAnswers,
-        email: email,
-    };
+    const id = Cookies.get('id');
+    const { data, error } = await supabase.from('LOGIN').select('*').eq('user_id', id).single();
+      if (error) {
+        throw error;
+      }
+    console.log(data.email)
+    if (data.email) {
+      const submissionData = {
+          qid:questionId,
+          answers: studentAnswers,
+          email: data.email,
+      };
 
-    const { error } = await supabase
-      .from("RESPONSES")
-      .insert([submissionData]);
-    if (error) {
-      console.error("Error submitting answers:", error);
-      alert("Failed to submit answers.");
-    } else {
-        setStudentAnswers({})
-        toast.error('Fill all fields!', {
-            position: 'top-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: 'light',
-          });
-        navigate('/student');
-        return
+      const { error } = await supabase
+        .from("RESPONSES")
+        .insert([submissionData]);
+      if (error) {
+        console.error("Error submitting answers:", error);
+        alert("Failed to submit answers.");
+      } else {
+          setStudentAnswers({})
+          toast.error('Fill all fields!');
+          navigate('/student');
+          return
+      }
     }
   };
 

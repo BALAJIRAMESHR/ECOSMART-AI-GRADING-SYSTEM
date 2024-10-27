@@ -5,11 +5,10 @@ import FacultyPage from './faculty/FacultyPage';
 import LoginPage from './authentication/LoginPage';
 import HODPage from './hod/HODPage';
 import StudentEnrollment from './faculty/Student Enrollment'; 
-import Qasettings from './common/Qasettings';
 import Scrutinizer from './scrutinizer/Scrutinizer';
 import Layout from './common/Layout'; 
 import FacultyLayout from './faculty/FacultyLayout'; 
-import Qapaper from './common/Qapaper';
+import Qapaper from './common/QA/Qapaper';
 import QaScrutinizer from './common/Qpscrutinizer';
 import Profile from './common/Profile';
 import ForgotPasswordPage from './authentication/forgot';
@@ -27,7 +26,6 @@ function App() {
         <Route path="/faculty" element={<FacultyLayout><FacultyPage /></FacultyLayout>} />
         <Route path="/hod" element={<Layout><HODPage /></Layout>} />
         <Route path="/studentenrollment" element={<Layout><StudentEnrollment /></Layout>} />
-        <Route path="/qasettings" element={<Layout><Qasettings /></Layout>} />
         <Route path="/scrutinizer" element={<Layout><Scrutinizer /></Layout>} />
         <Route path="/qapaper" element={<FacultyLayout><Qapaper/></FacultyLayout>} />
         <Route path="/qascrutinizer" element={<FacultyLayout><QaScrutinizer /></FacultyLayout>} />

@@ -3,11 +3,12 @@ import CalendarHeatmap from 'react-calendar-heatmap';
 import 'react-calendar-heatmap/dist/styles.css';
 import { supabase } from '../supabaseClient';
 import '../hod/hod.css';
-import avatar from '../assets/avatar.png'; // Import the default avatar
+import avatar from '../assets/avatar.png';
+import Cookies from 'js-cookie'
 
 const HODPage = () => {
-  const [name, setName] = useState('John Doe');
-  const [email, setEmail] = useState('john.doe@example.com');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [profilePic, setProfilePic] = useState('https://example.com/default-profile.jpg');
   const [totalTimeSpent, setTotalTimeSpent] = useState(0);
   const [contributionData, setContributionData] = useState([]);
@@ -15,53 +16,27 @@ const HODPage = () => {
   const [loading, setLoading] = useState(true);
 
   const handleImageError = () => {
-    setProfilePic(avatar); // Fallback to the default avatar
+    setProfilePic(avatar); 
   };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-
-        if (sessionError) {
-          console.error('Session error:', sessionError);
-          throw sessionError;
-        }
-
-        let user = null;
-        if (session && session.user) {
-          const userEmail = session.user.email;
-          console.log('User email:', userEmail);
-
-          const { data: facultyData, error: facultyError } = await supabase
-            .from('FACULTYLOGIN')
-            .select('name, email, designation')
-            .eq('email', userEmail)
-            .single();
-
-          if (facultyError) {
-            throw facultyError;
-          }
-
-          user = facultyData;
-        } else {
-          const storedUser = localStorage.getItem('user');
-          if (storedUser) {
-            user = JSON.parse(storedUser);
-          } else {
-            setError('No user session found.');
-            return;
-          }
-        }
-
-        if (user) {
-          setName(user.name);
-          setEmail(user.email);
-        } else {
-          setError('No user data found.');
-        }
+        const userId = Cookies.get('id');
+        
+        const { data, error } = await supabase
+          .from('LOGIN')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+      
+        if (error) {
+          throw error;
+        }      
+        console.log(data);
+        setEmail(data.email);
       } catch (err) {
-        console.error('Error fetching user data:', err);
+        console.error('Error fetching user data:', err.message || err);
         setError('Error fetching user data.');
       } finally {
         setLoading(false);
@@ -100,43 +75,12 @@ const HODPage = () => {
     };
   }, [email]);
 
-  useEffect(() => {
-    const fetchContributionData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('USER_TIME_SPENT')
-          .select('date, time_spent')
-          .eq('email', email);
-
-        if (error) {
-          console.error('Error fetching time spent:', error);
-          return;
-        }
-
-        const contributionData = data.map((record) => ({
-          date: record.date,
-          count: Math.round(record.time_spent * 60) // Convert hours to minutes
-        }));
-
-        setContributionData(contributionData);
-
-        const total = data.reduce((sum, record) => sum + record.time_spent, 0);
-        setTotalTimeSpent(total);
-      } catch (err) {
-        console.error('Error fetching contribution data:', err);
-      }
-    };
-
-    fetchContributionData();
-  }, [email]);
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div
       className="max-screen flex flex-col items-center justify-start pt-28 bg-cover bg-center"
-      // style={{ backgroundImage: `url(${profilePic})` }}
     >
       <div className="flex flex-col items-center p-12 rounded-lg mb-8 w-full max-w-30">
         <img src={profilePic} onError={handleImageError}

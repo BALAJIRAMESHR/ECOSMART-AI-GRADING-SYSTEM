@@ -43,8 +43,7 @@ export default function LoginPage() {
 
       const user = userData[0];
       if (user.password === trimmedPassword) {
-        Cookies.set('email', trimmedEmail);
-        Cookies.set('designation', user.designation)
+        Cookies.set('id', user.user_id);
 
         if (user) {
           if ( user.designation == "faculty" ) {

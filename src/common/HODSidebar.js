@@ -18,7 +18,7 @@ const Sidebar = () => {
           <FaUserGraduate className="w-5 h-5 object-contain" />
           <span className="text-md font-medium">Student Enrollment</span>
         </Link>
-        <Link to="/qasettings" className="flex gap-2 items-center py-2 px-4 hover:border-l-2">
+        <Link to="/qapaper" className="flex gap-2 items-center py-2 px-4 hover:border-l-2">
           <FaUser className="w-5 h-5 object-contain" />
           <span className="text-md font-medium">QA Settings</span>
         </Link>

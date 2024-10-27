@@ -25,7 +25,7 @@ const QATableData = () => {
       {qaData.length > 0 ? (
         <div className='py-3 flex gap-4'>
           {qaData.map((entry, index) => (
-            <Link to={`test/${entry.question_id}`} key={index} state={{ questionId: entry.question_id }}>
+            <Link to={`test/${entry.question_paper_id}`} key={index} state={{ questionId: entry.question_paper_id }}>
               <div className="border flex gap-6 px-4 py-2 mb-2 cursor-pointer hover:text-blue-600">
                 <div className='font-medium'>{entry.exam_name}</div> 
               </div>
