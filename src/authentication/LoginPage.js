@@ -21,14 +21,13 @@ export default function LoginPage() {
       const trimmedEmail = email.trim().toLowerCase();
       const trimmedPassword = password.trim();
 
-      // Fetch user data from the LOGIN table
       const { data: userData, error: fetchError } = await supabase
         .from('LOGIN')
         .select('*')
         .eq('email', trimmedEmail);
 
-      console.log('User Data:', userData); // Log the userData to see what is returned
-      console.log('Fetch Error:', fetchError); // Log any errors returned
+      console.log('User Data:', userData);
+      console.log('Fetch Error:', fetchError);
 
       if (!userData || userData.length === 0) {
         // No user found
@@ -42,29 +41,21 @@ export default function LoginPage() {
         return;
       }
 
-      // We have exactly one user
       const user = userData[0];
-
       if (user.password === trimmedPassword) {
-        // Set the email in cookies and local storage
         Cookies.set('email', trimmedEmail);
-        localStorage.setItem('user', JSON.stringify(user));
+        Cookies.set('designation', user.designation)
 
-        // Navigate based on the user's email
-        if (user.email.includes('hod')) {
-          navigate('/hod');
-        } else if (
-          user.email.includes('ads') ||
-          user.email.includes('cs') ||
-          user.email.includes('its')
-        ) {
-          navigate('/faculty');
-        } else if (
-          user.email.includes('21ad') ||
-          user.email.includes('21cs') ||
-          user.email.includes('21it')
-        ) {
-          navigate('/student');
+        if (user) {
+          if ( user.designation == "faculty" ) {
+            navigate('/faculty')
+          }
+          else if ( user.designation == "student" ) {
+            navigate('/student')
+          }
+          else if ( user.designation == "hod" ) {
+            navigate("/hod")
+          }
         } else {
           setError('User role is not recognized.');
         }
