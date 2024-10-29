@@ -1,7 +1,7 @@
 // src/components/Layout.js
 import React from 'react';
-import Sidebar from './HODSidebar';  // Adjust the path if needed
-import TopNavbar from './TopNavbar';  // Adjust the path if needed
+import Sidebar from './SideBar/HODSidebar';  // Adjust the path if needed
+import TopNavbar from './NavBar/TopNavbar';  // Adjust the path if needed
 
 const Layout = ({ children }) => {
   return (

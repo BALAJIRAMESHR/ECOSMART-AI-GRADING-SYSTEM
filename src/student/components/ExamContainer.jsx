@@ -22,10 +22,7 @@ function ExamContainer() {
   useEffect(() => {
     const fetchQuestions = async () => {
       if (questionId) {
-        const { data, error } = await supabase
-          .from("QATABLE")
-          .select("qap")
-          .eq("question_paper_id", questionId);
+        const { data, error } = await supabase.from("QATABLE").select("qap").eq("question_paper_id", questionId);
 
         if (error) {
           console.error("Error fetching questions:", error);
@@ -56,9 +53,7 @@ function ExamContainer() {
           email: data.email,
       };
 
-      const { error } = await supabase
-        .from("RESPONSES")
-        .insert([submissionData]);
+      const { error } = await supabase.from("RESPONSES").insert([submissionData]);
       if (error) {
         console.error("Error submitting answers:", error);
         alert("Failed to submit answers.");

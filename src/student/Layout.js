@@ -1,7 +1,7 @@
 // src/components/Layout.js
 import React from 'react';
-import TopNavbar from '../common/TopNavbar';
-import StuSidebar from '../common/StuSideBar';
+import TopNavbar from '../common/NavBar/TopNavbar';
+import StuSidebar from '../common/SideBar/StuSideBar';
 
 const StudentLayout = ({ children }) => {
   return (
