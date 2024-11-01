@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Cookies from 'js-cookie';
@@ -11,6 +11,22 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const id = Cookies.get('id');
+      if (!id) {
+        return;
+      }
+      const { data, error } = await supabase.from('LOGIN').select('designation').eq('user_id', id).single();
+      if (error) {
+        navigate('/');
+      }
+      navigate(`/${data['designation']}`);
+    };
+
+    fetchData();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
