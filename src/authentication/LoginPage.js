@@ -14,11 +14,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const id = Cookies.get('id');
-      if (!id) {
+      const cookie_user_id = Cookies.get('cookie_user_id');
+      if (!cookie_user_id) {
         return;
       }
-      const { data, error } = await supabase.from('LOGIN').select('designation').eq('user_id', id).single();
+      const { data, error } = await supabase.from('LOGIN').select('designation').eq('user_id', cookie_user_id).single();
       if (error) {
         navigate('/');
       }
@@ -59,7 +59,7 @@ export default function LoginPage() {
 
       const user = userData[0];
       if (user.password === trimmedPassword) {
-        Cookies.set('id', user.user_id);
+        Cookies.set('cookie_user_id', user.user_id);
 
         if (user) {
           if ( user.designation == "faculty" ) {

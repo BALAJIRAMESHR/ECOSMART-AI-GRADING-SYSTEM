@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 const Sidebar = () => {
 
   const handleLogout = () => {
-    Cookies.remove('id');
+    Cookies.remove('cookie_user_id');
     window.location.href = '/';
   }
 

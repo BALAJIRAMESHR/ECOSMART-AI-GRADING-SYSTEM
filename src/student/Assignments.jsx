@@ -37,7 +37,7 @@ const QATableData = () => {
 
   useEffect(() => {
     const fetchStudentCourses = async () => {
-      const id = Cookies.get('id');
+      const id = Cookies.get('cookie_user_id');
       const { data, error } = await supabase.from('LOGIN').select('*').eq('user_id', id).single();
 
       if (error) {

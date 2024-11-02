@@ -13,7 +13,7 @@ const TopNavbar = () => {
   };
 
   const handleLogout = () => {
-    Cookies.remove('id');
+    Cookies.remove('cookie_user_id');
     window.location.href = '/';
   }
 
