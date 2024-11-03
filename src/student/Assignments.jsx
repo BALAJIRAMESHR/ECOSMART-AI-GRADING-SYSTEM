@@ -21,6 +21,7 @@ const QATableData = () => {
   // Fetch enrolled courses
   useEffect(() => {
     const fetchStudentCourses = async () => {
+<<<<<<< HEAD
       if (!userId) return;
 
       const { data, error } = await supabase
@@ -28,6 +29,10 @@ const QATableData = () => {
         .select('*')
         .eq('user_id', userId)
         .single();
+=======
+      const id = Cookies.get('cookie_user_id');
+      const { data, error } = await supabase.from('LOGIN').select('*').eq('user_id', id).single();
+>>>>>>> d06634a348fd0f7c3fff4547905d89926fe86c11
 
       if (error) {
         console.error('Error fetching data from LOGIN:', error);

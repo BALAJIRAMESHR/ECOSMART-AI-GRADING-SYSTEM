@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import Cookies from 'js-cookie';
@@ -11,6 +11,22 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const cookie_user_id = Cookies.get('cookie_user_id');
+      if (!cookie_user_id) {
+        return;
+      }
+      const { data, error } = await supabase.from('LOGIN').select('designation').eq('user_id', cookie_user_id).single();
+      if (error) {
+        navigate('/');
+      }
+      navigate(`/${data['designation']}`);
+    };
+
+    fetchData();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -43,7 +59,7 @@ export default function LoginPage() {
 
       const user = userData[0];
       if (user.password === trimmedPassword) {
-        Cookies.set('id', user.user_id);
+        Cookies.set('cookie_user_id', user.user_id);
 
         if (user) {
           if ( user.designation == "faculty" ) {

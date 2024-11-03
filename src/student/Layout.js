@@ -6,7 +6,6 @@ import StuSidebar from '../common/SideBar/StuSideBar';
 const StudentLayout = ({ children }) => {
   return (
     <div className="flex w-full">
-      {/* SideBar */}
       <StuSidebar/>
       <div className='flex flex-col w-full'>
         <TopNavbar />

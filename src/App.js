@@ -23,13 +23,13 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="/faculty" element={<FacultyLayout><FacultyPage /></FacultyLayout>} />
         <Route path="/hod" element={<Layout><HODPage /></Layout>} />
         <Route path="/studentenrollment" element={<Layout><StudentEnrollment /></Layout>} />
         <Route path="/scrutinizer" element={<Layout><Scrutinizer /></Layout>} />
         <Route path="/qapaper" element={<FacultyLayout><Qapaper/></FacultyLayout>} />
+        <Route path="/faculty" element={<FacultyLayout><FacultyPage /></FacultyLayout>} />
         <Route path="/qascrutinizer" element={<FacultyLayout><QaScrutinizer /></FacultyLayout>} />
-        <Route path="/profile" element={<Layout><Profile /></Layout>} />
+        {/* <Route path="/profile" element={<Layout><Profile /></Layout>} /> */}
         <Route path="/coursemapping" element={<Layout><HodCourseMapping  /></Layout>} />
         <Route path="/forgot" element={<ForgotPasswordPage/>} />
         

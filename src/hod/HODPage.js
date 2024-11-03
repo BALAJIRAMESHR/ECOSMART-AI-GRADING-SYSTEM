@@ -22,7 +22,7 @@ const HODPage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userId = Cookies.get('id');
+        const userId = Cookies.get('cookie_user_id');
         
         const { data, error } = await supabase
           .from('LOGIN')

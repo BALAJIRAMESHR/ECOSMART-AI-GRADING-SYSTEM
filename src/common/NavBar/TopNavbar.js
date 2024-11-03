@@ -2,13 +2,20 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AiOutlineLogout } from 'react-icons/ai';
 import avatar from '../../assets/avatar.png';
+import Cookies from 'js-cookie';
 
 const TopNavbar = () => {
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
   };
+
+  const handleLogout = () => {
+    Cookies.remove('cookie_user_id');
+    window.location.href = '/';
+  }
 
   return (
     <div className="w-full px-4 bg-white shadow-md z-40 flex justify-between items-center p-4">
@@ -33,10 +40,10 @@ const TopNavbar = () => {
               <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
                 Profile
               </Link>
-              <Link to="/logout" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+              <div onClick={handleLogout} className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
                 <AiOutlineLogout className="inline mr-2" />
                 Logout
-              </Link>
+              </div>
             </div>
           )}
         </div>
