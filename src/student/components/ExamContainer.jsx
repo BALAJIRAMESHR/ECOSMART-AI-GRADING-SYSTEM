@@ -164,7 +164,8 @@ function ExamContainer() {
   }
 
   const EvaluatingExam = async () => {
-    const url = "http://127.0.0.1:8000/get_result";
+    // const url = "http://127.0.0.1:8000/get_result";
+    const url = "https://aieval-backend.vercel.app/get_result";
     console.log(questionId, userInfo.email);
   
     const data = {
