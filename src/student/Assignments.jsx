@@ -138,12 +138,13 @@ const QATableData = () => {
           <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm font-medium">
             Completed
           </span>
-          <Link 
+            `      <Link
           to={`/results/${question.question_paper_id}`}
           className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
         >
           View Result
-        </Link>
+        </Link>`
+
         </div>
       ) : (
         <div className="flex justify-between items-center mt-4">
