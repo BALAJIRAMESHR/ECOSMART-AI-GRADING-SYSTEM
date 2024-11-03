@@ -18,13 +18,12 @@ const StudentDashboard = () => {
       const { data, error } = await supabase
         .from('STUDENT')
         .select()
-        .eq('student_id', cookie);
+        .eq('user_id', cookie);
       
       if (error) throw error;
       if (!data || data.length === 0) {
         throw new Error('No student data found');
       }
-
       setStudent(data[0]);
     } catch (error) {
       setError(error.message);

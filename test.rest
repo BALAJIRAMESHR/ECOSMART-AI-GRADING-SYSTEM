@@ -1,0 +1,53 @@
+# const EvaluatingExam = async () => {
+#   const url = "http://127.0.0.1:8000/get_result";
+#   console.log(questionId, userInfo.email);
+
+#   const data = {
+#     qap_id: questionId,
+#     email_ip: userInfo.email
+#   };
+
+#   try {
+#     const response = await axios.post(url, data, {
+#       headers: {
+#         "Content-Type": "application/json"
+#       }
+#     });
+#     console.log("Response:", response.data);
+#   } catch (error) {
+#     console.error("Failed with error:", error);
+#   }
+# };.
+
+
+POST http://127.0.0.1:8000/get_result
+Content-Type: application/json
+
+{
+  "qap_id": "5004329", 
+  "email_id": "barathkumar.21ad@kct.ac.in" 
+}
+
+
+
+{
+  "result": {
+    "final_score": "5/100",
+    "result": [
+      {
+        "question":"What is data science?",
+        "student_answer": "Data science is a field that uses scientific methods, processes, algorithms and systems to extract knowledge and insights from structured and unstructured data.",
+        "justification": "The student's response is incorrect as it does not match the expected answer from the answer key. The student response is not relevant to the prompt. The student has not demonstrated any understanding of the prompt or the expected answer.",
+        "mark": 0,
+        "question_number": 1
+      },
+      {
+        "question":"What is data science?",
+        "student_answer": "Data science is a field that uses scientific methods, processes, algorithms and systems to extract knowledge and insights from structured and unstructured data.",
+        "justification": "The student's response is incorrect and irrelevant. The student has not demonstrated any understanding of what data science is. The student's response is not within the word limit specified in the prompt. ",
+        "mark": 0,
+        "question_number": 2
+      }
+    ]
+  }
+}

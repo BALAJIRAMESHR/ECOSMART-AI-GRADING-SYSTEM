@@ -14,7 +14,7 @@ const QATableData = () => {
 
   // First fetch user ID from cookies
   useEffect(() => {
-    const id = Cookies.get('id');
+    const id = Cookies.get('cookie_user_id');
     setUserId(id);
   }, []);
 
