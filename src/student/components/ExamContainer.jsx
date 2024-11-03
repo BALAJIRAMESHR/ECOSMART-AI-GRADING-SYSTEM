@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { supabase } from "../../supabaseClient";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
 
 function ExamContainer() {
   const navigate = useNavigate();
@@ -14,16 +15,51 @@ function ExamContainer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
 
-  // Fetch user info from local storage on component mount
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem('user'));
-    if (storedUser) {
-      console.log("Found user data from local storage:", storedUser);
-      setUserInfo(storedUser);
-    } else {
-      toast.error('User session expired. Please log in again.');
-      navigate('/login');
-    }
+    const fetchUserData = async () => {
+      try {
+        // Get user_id from cookie instead of localStorage
+        const userId = Cookies.get('user_id');
+        
+        if (!userId) {
+          toast.error('User session expired. Please log in again.');
+          navigate('/login');
+          return;
+        }
+
+        // Fetch current user data from database
+        const { data: userData, error } = await supabase
+          .from('LOGIN')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
+        if (error || !userData) {
+          console.error('Error fetching user data:', error);
+          toast.error('Failed to verify user session. Please log in again.');
+          navigate('/login');
+          return;
+        }
+
+        // Remove sensitive data before setting to state
+        const sanitizedUserData = {
+          email: userData.email,
+          user_id: userData.user_id,
+          designation: userData.designation,
+          active: userData.active
+        };
+
+        setUserInfo(sanitizedUserData);
+        console.log("Current user data:", sanitizedUserData);
+
+      } catch (err) {
+        console.error('Error in fetchUserData:', err);
+        toast.error('Session verification failed. Please log in again.');
+        navigate('/login');
+      }
+    };
+
+    fetchUserData();
   }, [navigate]);
 
   useEffect(() => {
@@ -50,15 +86,17 @@ function ExamContainer() {
         }
 
         if (!data || data.length === 0) {
-          toast.error('No questions found');
+          toast.error('No questions found for this question paper ID');
           return;
         }
 
-        const questionsWithoutPrompts = data[0]?.qap.map(q => ({
-          qid: q.qid,
-          question: q.question,
-          marks: q.marks
-        })) || [];
+        const questionsWithoutPrompts = data.flatMap(row => 
+          row.qap.map(q => ({
+            qid: q.qid,
+            question: q.question,
+            marks: q.marks
+          }))
+        );
 
         setQuestions(questionsWithoutPrompts);
       } catch (error) {
@@ -83,85 +121,81 @@ function ExamContainer() {
     );
 
     if (unansweredQuestions.length > 0) {
-      // toast.error(Please answer all questions. ${unansweredQuestions.length} question(s) remaining.);
+      toast.error(`Please answer all questions. ${unansweredQuestions.length} question(s) remaining.`);
       return false;
     }
 
     return true;
   };
 
-const handleSubmit = async () => {
-  try {
-    if (isSubmitting) return;
-    setIsSubmitting(true);
+  const handleSubmit = async () => {
+    try {
+      if (isSubmitting) return;
+      setIsSubmitting(true);
 
-    if (!validateAnswers()) {
-      setIsSubmitting(false);
-      return;
-    }
+      if (!validateAnswers()) {
+        setIsSubmitting(false);
+        return;
+      }
 
-    if (!userInfo || !userInfo.email) {
-      toast.error('Could not verify user information. Please try again.');
-      setIsSubmitting(false);
-      return;
-    }
+      if (!userInfo || !userInfo.email || !userInfo.user_id) {
+        toast.error('Could not verify user information. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
 
-    // Check if the user has already submitted a response for this questionId
-    const { data: existingResponse, error: fetchError } = await supabase
-      .from("RESPONSES")
-      .select("*")
-      .eq("user_id", userInfo.user_id)
-      .eq("qid", questionId); // Check by both user_id and qid
+      // Check if user has already submitted
+      const { data: existingResponse, error: fetchError } = await supabase
+        .from("RESPONSES")
+        .select("*")
+        .eq("user_id", userInfo.user_id)
+        .eq("qid", questionId);
 
-    if (fetchError) {
-      console.error("Fetch error while checking existing responses:", fetchError);
-      toast.error('Failed to check existing responses. Please try again.');
-      setIsSubmitting(false);
-      return;
-    }
+      if (fetchError) {
+        console.error("Fetch error while checking existing responses:", fetchError);
+        toast.error('Failed to check existing responses. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
 
-    // Check if a response exists
-    if (existingResponse && existingResponse.length > 0) {
-      toast.error('You have already submitted answers for this question.');
-      setIsSubmitting(false);
-      return;
-    }
+      if (existingResponse && existingResponse.length > 0) {
+        toast.error('You have already submitted answers for this exam.');
+        setIsSubmitting(false);
+        return;
+      }
 
-    // Proceed with submission if no existing response
-    const submissionData = {
-      qid: questionId,
-      answers: studentAnswers,
-      email: userInfo.email,
-      user_id: userInfo.user_id
-    };
+      const submissionData = {
+        qid: questionId,
+        answers: studentAnswers,
+        email: userInfo.email,
+        user_id: userInfo.user_id,
+        created_at: new Date().toISOString()
+      };
 
-    const { error: submitError } = await supabase
-      .from("RESPONSES")
-      .insert([submissionData]);
+      const { error: submitError } = await supabase
+        .from("RESPONSES")
+        .insert([submissionData]);
 
-    if (submitError) {
-      console.error("Submission error:", submitError);
+      if (submitError) {
+        console.error("Submission error:", submitError);
+        toast.error('Failed to submit answers. Please try again.');
+        return;
+      }
+
+      toast.success('Answers submitted successfully!');
+      setStudentAnswers({});
+
+      setTimeout(() => {
+        navigate('/student');
+      }, 1500);
+
+    } catch (error) {
+      console.error("Unexpected error during submission:", error);
       toast.error('Failed to submit answers. Please try again.');
-      return;
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast.success('Answers submitted successfully!');
-    setStudentAnswers({});
-
-    setTimeout(() => {
-      navigate('/student'); // Redirect to the student page after submission
-    }, 1500);
-
-  } catch (error) {
-    console.error("Unexpected error during submission:", error);
-    toast.error('Failed to submit answers. Please try again.');
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
-
-
+  };
 
   return (
     <div className="min-h-screen w-[50%] mx-auto py-6">
@@ -178,7 +212,14 @@ const handleSubmit = async () => {
         theme="light"
       />
       
-      <div className="text-center w-full mt-4 font-medium text-xl">Exam</div>
+      <div className="text-center w-full mt-4 font-medium text-xl">
+        Exam
+        {userInfo && (
+          <div className="text-sm text-gray-600 mt-2">
+            Logged in as: {userInfo.email}
+          </div>
+        )}
+      </div>
       
       <div className="mt-6">
         {questions.length === 0 ? (
