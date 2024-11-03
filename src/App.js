@@ -16,6 +16,7 @@ import HodCourseMapping from './hod/HodCourseMapping';
 import StudentLayout from './student/Layout';
 import Assignments from './student/Assignments';
 import ExamContainer from './student/components/ExamContainer';
+import ResultTable from './student/ResultTable'
 
 
 function App() {
@@ -37,7 +38,7 @@ function App() {
         <Route path="/student" element={<StudentLayout><StudentPage /></StudentLayout>} />
         <Route path="/student/assignments" element={<StudentLayout><Assignments /></StudentLayout>} />
         <Route path="/student/assignments/test/:id" element={<ExamContainer/>} />
-      
+        <Route path="/results/:questionId" element={<ResultTable />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
