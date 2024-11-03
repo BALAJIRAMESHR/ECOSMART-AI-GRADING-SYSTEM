@@ -4,6 +4,8 @@ import { supabase } from "../../supabaseClient";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
+import axios from 'axios';
+import LoaderDesign from "../../common/Loader";
 
 function ExamContainer() {
   const navigate = useNavigate();
@@ -14,12 +16,14 @@ function ExamContainer() {
   const [studentAnswers, setStudentAnswers] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [CourseId, setCourseId] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         // Get user_id from cookie instead of localStorage
-        const userId = Cookies.get('user_id');
+        const userId = Cookies.get('cookie_user_id');
         
         if (!userId) {
           toast.error('User session expired. Please log in again.');
@@ -37,7 +41,7 @@ function ExamContainer() {
         if (error || !userData) {
           console.error('Error fetching user data:', error);
           toast.error('Failed to verify user session. Please log in again.');
-          navigate('/login');
+          navigate('/');
           return;
         }
 
@@ -50,7 +54,6 @@ function ExamContainer() {
         };
 
         setUserInfo(sanitizedUserData);
-        console.log("Current user data:", sanitizedUserData);
 
       } catch (err) {
         console.error('Error in fetchUserData:', err);
@@ -78,18 +81,19 @@ function ExamContainer() {
 
         const { data, error } = await supabase
           .from("QATABLE")
-          .select("qap")
+          .select("*")
           .eq("question_paper_id", questionId);
-
-        if (error) {
-          throw error;
+          
+        if (error || !data || data.length === 0) {
+          throw new Error('No questions found for this question paper ID');
         }
-
+        
         if (!data || data.length === 0) {
           toast.error('No questions found for this question paper ID');
           return;
         }
-
+        
+        setCourseId(data[0].course_id);
         const questionsWithoutPrompts = data.flatMap(row => 
           row.qap.map(q => ({
             qid: q.qid,
@@ -126,6 +130,68 @@ function ExamContainer() {
     }
 
     return true;
+  };
+
+  const StoreResults = async (result) => { 
+
+    console.log("Storing results:", result);
+    console.log("marks:", result.result.final_score);
+
+    const submissionResults = {
+      question_paper_id: questionId,
+      course_id: CourseId,
+      email_id: userInfo.email,
+      user_id: userInfo.user_id,
+      result: "Pass",
+      marks: result.result.final_score,
+      qa: result.result.result,
+    };
+
+    console.log(submissionResults)
+
+    const { error: submitError } = await supabase
+      .from("RESULTS")
+      .insert([submissionResults]);
+
+    if (submitError) {
+      console.error("Submission error:", submitError);
+      toast.error('Failed to submit answers. Please try again.');
+      return;
+    }
+
+    toast.success('Answers submitted successfully!');
+
+  }
+
+  const EvaluatingExam = async () => {
+    // const url = "http://127.0.0.1:8000/get_result";
+    const url = "https://aieval-backend.vercel.app/get_result";
+    console.log(questionId, userInfo.email);
+  
+    const data = {
+      "qap_id": String(questionId),
+      "email_id": String(userInfo.email)  
+    };
+  
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      console.log("Response:", response.data);
+      // Store the result in Supbase
+      await StoreResults(response.data);
+
+    } catch (error) {
+      if (error.response) {
+        console.error("Error data:", error.response.data);
+        console.error("Error status:", error.response.status);
+        console.error("Error headers:", error.response.headers);
+      } else {
+        console.error("Failed with error:", error.message);
+      }
+    }
   };
 
   const handleSubmit = async () => {
@@ -183,6 +249,12 @@ function ExamContainer() {
       }
 
       toast.success('Answers submitted successfully!');
+      toast.warning("We are evaluating the exam. Please wait for the results.");
+      setIsLoading(true);
+
+      // Evaluate the exam in Backend and redirect to student dashboard
+      await EvaluatingExam();
+
       setStudentAnswers({});
 
       setTimeout(() => {
@@ -198,63 +270,54 @@ function ExamContainer() {
   };
 
   return (
-    <div className="min-h-screen w-[50%] mx-auto py-6">
-      <ToastContainer 
-        position="top-right" 
-        autoClose={5000} 
-        hideProgressBar={false} 
-        newestOnTop={false} 
-        closeOnClick 
-        rtl={false} 
-        pauseOnFocusLoss={false} 
-        draggable 
-        pauseOnHover={false} 
-        theme="light"
-      />
-      
-      <div className="text-center w-full mt-4 font-medium text-xl">
-        Exam
-        {userInfo && (
-          <div className="text-sm text-gray-600 mt-2">
-            Logged in as: {userInfo.email}
-          </div>
-        )}
-      </div>
-      
-      <div className="mt-6">
-        {questions.length === 0 ? (
-          <div className="text-center text-gray-500">No questions available</div>
-        ) : (
-          questions.map((q, index) => (
-            <div key={q.qid || index} className="mb-6 p-4 bg-white rounded-lg shadow">
-              <div className="font-semibold mb-2">
-                Question {index + 1}: <span className="text-gray-600">({q.marks} marks)</span>
-              </div>
-              <div className="mb-3">{q.question}</div>
-              <textarea
-                className="mt-2 p-3 border rounded-md w-full min-h-[100px] focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Type your answer here..."
-                value={studentAnswers[q.qid] || ""}
-                onChange={(e) => handleAnswerChange(q.qid, e.target.value)}
-                disabled={isSubmitting}
-              />
+      <div className="min-h-screen w-[50%] mx-auto py-6">
+        <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss={false} draggable pauseOnHover={false} theme="light"/>
+        {
+          isLoading ? <LoaderDesign /> : null
+        }
+        <div className="text-center w-full mt-4 font-medium text-xl">
+          Exam
+          {userInfo && (
+            <div className="text-sm text-gray-600 mt-2">
+              Logged in as: {userInfo.email}
             </div>
-          ))
-        )}
+          )}
+        </div>
+        
+        <div className="mt-6">
+          {questions.length === 0 ? (
+            <div className="text-center text-gray-500">No questions available</div>
+          ) : (
+            questions.map((q, index) => (
+              <div key={q.qid || index} className="mb-6 p-4 bg-white rounded-lg shadow">
+                <div className="font-semibold mb-2">
+                  Question {index + 1}: <span className="text-gray-600">({q.marks} marks)</span>
+                </div>
+                <div className="mb-3">{q.question}</div>
+                <textarea
+                  className="mt-2 p-3 border rounded-md w-full min-h-[100px] focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Type your answer here..."
+                  value={studentAnswers[q.qid] || ""}
+                  onChange={(e) => handleAnswerChange(q.qid, e.target.value)}
+                  disabled={isSubmitting}
+                />
+              </div>
+            ))
+          )}
 
-        {questions.length > 0 && (
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className={`w-full bg-blue-500 text-white p-3 rounded-lg mt-4 font-medium
-              ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}
-            `}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit Answers'}
-          </button>
-        )}
+          {questions.length > 0 && (
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className={`w-full bg-blue-500 text-white p-3 rounded-lg mt-4 font-medium
+                ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'}
+              `}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Answers'}
+            </button>
+          )}
+        </div>
       </div>
-    </div>
   );
 }
 
