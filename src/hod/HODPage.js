@@ -1,154 +1,116 @@
-import React, { useState, useEffect } from 'react';
-import CalendarHeatmap from 'react-calendar-heatmap';
-import 'react-calendar-heatmap/dist/styles.css';
+import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
-import '../hod/hod.css';
-import avatar from '../assets/avatar.png';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
+import LoaderDesign from '../common/Loader';
 
 const HODPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [profilePic, setProfilePic] = useState('https://example.com/default-profile.jpg');
-  const [totalTimeSpent, setTotalTimeSpent] = useState(0);
-  const [contributionData, setContributionData] = useState([]);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [hodData, setHodData] = useState(null);
+  const [error, setError] = useState(null);
+  const cookie = Cookies.get('cookie_user_id');
 
-  const handleImageError = () => {
-    setProfilePic(avatar); 
+  const fetchHODData = async () => {
+    try {
+      if (!cookie) {
+        throw new Error('No user ID found. Please log in again.');
+      }
+
+      console.log('Fetching HOD data for ID:', cookie);
+
+      // Fetch HOD data including department details
+      const { data: userData, error: userError } = await supabase
+        .from('FACULTY')
+        .select(
+          `
+          fid,
+          email,
+          designation,
+          DEPARTMENT:department_id (
+            department_name
+          )
+        `
+        )
+        .eq('fid', cookie)
+        .single();
+
+      if (userError) {
+        console.error('User fetch error:', userError);
+        throw new Error('Failed to fetch HOD data.');
+      }
+
+      if (!userData) {
+        throw new Error('No user data found for the given ID.');
+      }
+
+      // Set combined data to state
+      const combinedData = {
+        ...userData,
+        department: userData.DEPARTMENT?.department_name || 'Not assigned',
+      };
+
+      console.log('Retrieved HOD data:', combinedData);
+      setHodData(combinedData);
+    } catch (error) {
+      console.error('Error fetching HOD data:', error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userId = Cookies.get('cookie_user_id');
-        
-        const { data, error } = await supabase
-          .from('LOGIN')
-          .select('*')
-          .eq('user_id', userId)
-          .single();
-      
-        if (error) {
-          throw error;
-        }      
-        console.log(data);
-        setEmail(data.email);
-      } catch (err) {
-        console.error('Error fetching user data:', err.message || err);
-        setError('Error fetching user data.');
-      } finally {
-        setLoading(false);
-      }
-    };
+    fetchHODData();
+  }, [cookie]);
 
-    fetchUserData();
-  }, []);
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <LoaderDesign />
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    const startTime = Date.now();
+  if (error) {
+    return (
+      <div className="p-6">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded relative">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
-    const handleBeforeUnload = async () => {
-      const endTime = Date.now();
-      const timeSpent = (endTime - startTime) / 1000 / 60 / 60; // Time in hours
+  if (!hodData) {
+    return (
+      <div className="p-6">
+        <div className="bg-gray-50 border border-gray-200 text-gray-700 px-4 py-3 rounded relative">
+          No HOD data available
+        </div>
+      </div>
+    );
+  }
 
-      try {
-        const { data, error } = await supabase
-          .from('USER_TIME_SPENT')
-          .insert([{ email, time_spent: timeSpent, date: new Date().toISOString().split('T')[0] }]);
-
-        if (error) {
-          console.error('Error saving time spent:', error);
-        } else {
-          console.log('Time spent saved successfully:', data);
-        }
-      } catch (err) {
-        console.error('Error:', err);
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, [email]);
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  const profileData = [
+    { label: 'Email', value: hodData.email },
+    { label: 'Designation', value: hodData.designation },
+    { label: 'Department', value: hodData.department },
+  ];
 
   return (
-    <div
-      className="max-screen flex flex-col items-center justify-start pt-28 bg-cover bg-center"
-    >
-      <div className="flex flex-col items-center p-12 rounded-lg mb-8 w-full max-w-30">
-        <img src={profilePic} onError={handleImageError}
-          alt="Profile" className="w-34 h-34 rounded-full mb-4" />
-        <div className="text-center">
-          <h2 className="text-4xl font-bold">{name}</h2>
-          <p className=" text-2xl text-gray-600">{email}</p>
+    <div className="p-6">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <div className="border-b border-gray-200 px-6 py-4">
+          <h1 className="text-xl font-medium text-blue-800">HOD Profile</h1>
         </div>
-      </div>
-
-      <div className="bg-white p-10 rounded-lg  mb-8 w-full max-w-7xl">
-        <h3 className="text-2xl font-semibold text-center mb-6">Department Details</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 h-52">
-          <div className="bg-blue-100 p-6 rounded-lg shadow-md text-center content-center">
-            <h4 className="text-3xl font-bold">120</h4>
-            <p className="font-semibold text-gray-700">Number Of Students</p>
+        <div className="px-6 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {profileData.map((item, index) => (
+              <div key={index} className="flex flex-col space-y-1">
+                <span className="text-neutral-600 font-normal">{item.label}:</span>
+                <span className="text-black font-medium">{item.value}</span>
+              </div>
+            ))}
           </div>
-          <div className="bg-green-100 p-6 rounded-lg shadow-md text-center content-center">
-            <h4 className="text-3xl font-bold">30</h4>
-            <p className="font-semibold text-gray-700">Number of Teachers</p>
-          </div>
-          <div className="bg-purple-100 p-6 rounded-lg shadow-md text-center content-center">
-            <h4 className="text-3xl font-bold">32</h4>
-            <p className="font-semibold text-gray-700">Total Courses</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg h-full w-full max-w-5xl">
-        <h3 className="text-2xl font-semibold text-center mb-6">Overall Performance</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 h-52">
-          <div className="bg-orange-100 p-6 rounded-lg text-center content-center">
-            <h4 className="text-xl font-semibold">Total Contribution</h4>
-            <p className="mt-4 font-bold text-3xl text-black-700">{contributionData.length} days</p>
-          </div>
-          <div className="bg-yellow-100 p-6 rounded-lg text-center content-center">
-            <h4 className="text-xl font-semibold">Total Hours Spent</h4>
-            <p className="mt-4 font-bold text-3xl text-black-700">{totalTimeSpent.toFixed(2)} Hours</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-4xl">
-        <h3 className="text-2xl font-semibold text-center mb-6">Contribution Overview</h3>
-        <div className="relative">
-          <CalendarHeatmap
-            startDate={new Date(new Date().getFullYear(), 0, 1)}
-            endDate={new Date()}
-            values={contributionData}
-            classForValue={(value) => {
-              if (!value) {
-                return 'color-empty';
-              }
-              return `color-scale-${Math.min(Math.floor(value.count / 60), 4)}`;
-            }}
-            tooltipDataAttrs={(value) => {
-              if (!value.date) {
-                return { 'data-tip': 'No contributions' };
-              }
-              return {
-                'data-tip': `${value.date}: ${value.count} minutes`,
-              };
-            }}
-            showWeekdayLabels
-            gutterSize={2} // Adjust to control the gap between months
-            horizontal
-          />
-
         </div>
       </div>
     </div>

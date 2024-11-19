@@ -1,71 +1,73 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
-// import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
+import LoaderDesign from '../common/Loader';
 
-const MainContent = () => {
-  const [name, setName] = useState('');
+const StudentDashboard = () => {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [student, setStudent] = useState(null);
+  const [error, setError] = useState(null);
+  const cookie = Cookies.get('cookie_user_id');
+
+  const fetchStudent = async () => {
+    try {
+      if (!cookie) {
+        throw new Error('No user ID found');
+      }
+
+      const { data, error } = await supabase
+        .from('FACULTY')
+        .select(`
+          *,
+          DEPARTMENT:department_id (
+            department_name
+          )
+        `)
+        .eq('fid', cookie)
+        .single();
+
+      if (error) throw error;
+      if (!data) {
+        throw new Error('No faculty data found');
+      }
+      setStudent(data);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    fetchStudent();
+  }, [cookie]);
 
-        if (sessionError) {
-          console.error('Session error:', sessionError);
-          throw sessionError;
-        }
-
-        let user = null;
-        if (session && session.user) {
-          const userEmail = session.user.email;
-          console.log('User email:', userEmail);
-          const { data: facultyData } = await supabase
-            .from('FACULTYLOGIN')
-            .select('name')
-            .eq('email', userEmail)
-            .single();
-
-          user = facultyData;
-        } else {
-          console.warn('No user session found, checking local storage.');
-          const storedUser = localStorage.getItem('user');
-          if (storedUser) {
-            user = JSON.parse(storedUser);
-          } else {
-            console.warn('No user data in local storage or session.');
-            setError('No user session found.');
-            return;
-          }
-        }
-
-        if (user) {
-          setName(user.name);
-        } else {
-          setError('No user data found.');
-        }
-      } catch (err) {
-        console.error('Error fetching user data:', err);
-        setError('Error fetching user data.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  if (loading) return <p>Loading...</p>;
-
-  if (error) return <p>{error}</p>;
+  if (loading) return <div><LoaderDesign/></div>;
+  if (error) return <div className="p-24 text-red-600">{error}</div>;
+  if (!student) return <div className="p-24">No student data available</div>;
 
   return (
-    <div className="min-h-screen py-10 px-6 overflow-scroll">
-      <h1 className='text-3xl font-medium'>Dashboard</h1>
-      <p className='text-neutral-600'>Welcome {name || 'User'} 👋</p>
+    <div className="flex">
+      <div className="p-24 flex-grow max-w-[90%] max-lg:max-w-[100%]">
+        <h1 className="text-xl font-medium pb-2 text-blue-800">Faculty Profile</h1>
+        <div className="mt-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-neutral-600 font-normal">Name:</div>
+            <div className='text-black'>{student?.faculty_name}</div>
+            
+            <div className="text-neutral-600 font-normal">Email:</div>
+            <div className='text-black'>{student?.email}</div>
+            
+            <div className="text-neutral-600 font-normal">Designation:</div>
+            <div className='text-black'>{student?.designation}</div>
+            
+            <div className="text-neutral-600 font-normal">Department:</div>
+            <div className='text-black'>{student?.DEPARTMENT?.department_name || 'Not assigned'}</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default MainContent;
+export default StudentDashboard;

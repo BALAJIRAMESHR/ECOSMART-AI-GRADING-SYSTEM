@@ -24,6 +24,7 @@ const Sidebar = () => {
   const hodLinks = [
     { path: '/hod', label: 'Dashboard' },
     { path: '/coursemapping', label: 'Course Mapping' },
+    
   ];
 
   const links = [
