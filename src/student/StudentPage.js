@@ -43,7 +43,7 @@ const StudentDashboard = () => {
   return (
     <div className="flex">
       <div className="p-24 flex-grow max-w-[70%] max-lg:max-w-[100%]">
-        <h1 className="text-xl font-medium pb-2 text-blue-800">Student Profile</h1>
+        <h1 className="text-xl font-medium pb-2 text-green-800">Student Profile</h1>
         <div className="mt-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="text-neutral-600 font-normal">Roll Number:</div>

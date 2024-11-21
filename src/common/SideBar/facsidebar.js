@@ -25,7 +25,7 @@ const Sidebar = () => {
   const isActivePath = (path) => location.pathname === path;
 
   return (
-    <div className="min-w-[14em] min-h-screen bg-green-800 text-white flex flex-col">
+    <div className="min-w-[18em]  min-h-screen bg-green-800 text-white flex flex-col">
       {/* Brand Header */}
       <div className="p-4 bg-green-900">
         <div className="flex items-center justify-center gap-3 mb-3">

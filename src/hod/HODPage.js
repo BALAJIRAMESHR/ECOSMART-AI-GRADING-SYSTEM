@@ -100,7 +100,7 @@ const HODPage = () => {
     <div className="p-6">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="border-b border-gray-200 px-6 py-4">
-          <h1 className="text-xl font-medium text-blue-800">HOD Profile</h1>
+          <h1 className="text-xl font-medium text-green-800">HOD Profile</h1>
         </div>
         <div className="px-6 py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
