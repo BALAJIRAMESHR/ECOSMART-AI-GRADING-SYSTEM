@@ -325,3 +325,5 @@ const QATableManagement = () => {
 };
 
 export default QATableManagement;
+
+// new commands
