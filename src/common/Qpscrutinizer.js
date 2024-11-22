@@ -50,11 +50,9 @@ const QATableManagement = () => {
         status: paper.status?.trim() || 'Pending'
       }));
 
-      // Log processed data for verification
-      console.log('Processed Papers:', processedData);
-
       setPapers(processedData);
-      setFilteredPapers(processedData);
+      // Apply initial filtering
+      applyFilters(processedData, searchTerm, 'All');
       setLoading(false);
     } catch (error) {
       console.error('Error fetching question papers:', error);
@@ -67,11 +65,42 @@ const QATableManagement = () => {
     fetchQuestionPapers();
   }, []);
 
+  // New function to apply both search and status filters
+  const applyFilters = (papersList, search, statusFilter) => {
+    let filtered = [...papersList];
+
+    // Apply search filter if there's a search term
+    if (search.trim()) {
+      filtered = filtered.filter(paper => 
+        paper.exam_name?.toLowerCase().includes(search.toLowerCase()) ||
+        paper.course_id?.toLowerCase().includes(search.toLowerCase()) ||
+        paper.question_paper_id?.toString().includes(search)
+      );
+    }
+
+    // Apply status filter if it's not 'All'
+    if (statusFilter !== 'All') {
+      filtered = filtered.filter(paper => paper.status === statusFilter);
+    }
+
+    setFilteredPapers(filtered);
+  };
+
+  // Handle search input changes
+  const handleSearch = (term) => {
+    setSearchTerm(term);
+    applyFilters(papers, term, filter);
+  };
+
+  // Handle status filter changes
+  const handleStatusFilter = (statusFilter) => {
+    setFilter(statusFilter);
+    applyFilters(papers, searchTerm, statusFilter);
+  };
+
   // Update paper status
   const updatePaperStatus = async (id, status = 'Pending') => {
     try {
-      console.log(`Initiating update for Paper ID: ${id}, Target Status: ${status}`);
-
       const { data, error } = await supabase
         .from('QATABLE')
         .update({ status })
@@ -79,42 +108,23 @@ const QATableManagement = () => {
         .select();
 
       if (error) {
-        console.error('Supabase Update Error:', error);
         setError(`Failed to update: ${error.message}`);
         return false;
       }
 
       if (data && data.length > 0) {
-        console.log(`Update successful for Paper ID: ${id}`, data);
+        // Refresh the papers list and maintain current filters
         await fetchQuestionPapers();
         setDetailsModal(null);
         return true;
       } else {
-        console.warn(`No rows updated for Paper ID: ${id}. Data:`, data);
         setError(`No changes made for Paper ID: ${id}.`);
         return false;
       }
     } catch (err) {
-      console.error('Unexpected error in update:', err);
       setError(`Error updating paper ID: ${id}. ${err.message}`);
       return false;
     }
-  };
-
-  // Enhanced search and filter functionality
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-    const filtered = papers.filter(paper => 
-      paper.exam_name?.toLowerCase().includes(term.toLowerCase()) ||
-      paper.course_id?.toLowerCase().includes(term.toLowerCase()) ||
-      paper.question_paper_id?.toString().includes(term)
-    );
-    
-    const statusFiltered = filter === 'All' 
-      ? filtered 
-      : filtered.filter(paper => paper.status === filter);
-    
-    setFilteredPapers(statusFiltered);
   };
 
   // Render QAP content
@@ -224,12 +234,12 @@ const QATableManagement = () => {
   };
 
   return (
-    <div className="container p-4   ">
+    <div className="container p-4">
       {detailsModal && (
         <PaperDetailsModal paper={detailsModal} onClose={() => setDetailsModal(null)} />
       )}
 
-      <div className=" overflow-hidden">
+      <div className="overflow-hidden">
         <div className="px-6 py-5 bg-gradient-to-r from-blue-50 to-white border-b flex justify-between items-center">
           <h2 className="text-3xl font-bold text-gray-800 flex items-center space-x-3">
             <FileText className="w-8 h-8 text-blue-600" />
@@ -251,10 +261,7 @@ const QATableManagement = () => {
               {['All', 'Pending', 'Accepted', 'Declined'].map((status) => (
                 <button
                   key={status}
-                  onClick={() => {
-                    setFilter(status);
-                    handleSearch(searchTerm);
-                  }}
+                  onClick={() => handleStatusFilter(status)}
                   className={`px-4 py-2 rounded-full text-sm font-medium flex items-center transition-all space-x-2 ${
                     filter === status
                       ? 'bg-blue-500 text-white'

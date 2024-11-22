@@ -126,10 +126,10 @@ const HodCourseMapping = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <Card className="max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gray-50 p-32">
+      <Card className="max-w-3xl mx-auto">
         <CardHeader>
-          <h1 className="text-2xl font-bold text-center text-gray-800">Faculty Course Mapping</h1>
+          <h1 className="text-2xl font-bold text-center text-green-800">Faculty Course Mapping</h1>
         </CardHeader>
         <CardContent>
           {/* Message Display */}
@@ -196,7 +196,7 @@ const HodCourseMapping = () => {
               onClick={handleSubmit}
               disabled={loading}
               className={`w-full p-3 rounded-lg text-white font-medium transition-colors ${
-                loading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'
               }`}
             >
               {loading ? 'Assigning...' : 'Assign Course'}
